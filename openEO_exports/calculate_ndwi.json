@@ -1,0 +1,101 @@
+{
+  "id": "ndwi_manual",
+  "parameters": [],
+  "process_graph": {
+    "load1": {
+      "process_id": "load_collection",
+      "arguments": {
+        "bands": [
+          "B03",
+          "B08"
+        ],
+        "id": "TERRASCOPE_S2_RHOW_V1",
+        "spatial_extent": {
+          "east": 5.850499911580535,
+          "north": 52.036289351361205,
+          "south": 50.031899260916134,
+          "west": 3.0755066427889015
+        },
+        "temporal_extent": [
+          "2020-01-01T00:00:00Z",
+          "2023-09-01T00:00:00Z"
+        ]
+      }
+    },
+    "reduce2": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_node": "load1"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "add3": {
+              "arguments": {
+                "x": {
+                  "from_node": "array1"
+                },
+                "y": {
+                  "from_node": "array2"
+                }
+              },
+              "process_id": "add"
+            },
+            "array1": {
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "label": "B03"
+              },
+              "process_id": "array_element"
+            },
+            "array2": {
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "label": "B08"
+              },
+              "process_id": "array_element"
+            },
+            "divide5": {
+              "arguments": {
+                "x": {
+                  "from_node": "subtract4"
+                },
+                "y": {
+                  "from_node": "add3"
+                }
+              },
+              "process_id": "divide",
+              "result": true
+            },
+            "subtract4": {
+              "arguments": {
+                "x": {
+                  "from_node": "array1"
+                },
+                "y": {
+                  "from_node": "array2"
+                }
+              },
+              "process_id": "subtract"
+            }
+          }
+        }
+      }
+    },
+    "save3": {
+      "process_id": "save_result",
+      "arguments": {
+        "data": {
+          "from_node": "reduce2"
+        },
+        "format": "NETCDF"
+      },
+      "result": true
+    }
+  }
+}
